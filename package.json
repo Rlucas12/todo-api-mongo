@@ -1,0 +1,26 @@
+{
+  "name": "todo-api",
+  "version": "1.0.0",
+  "description": "Todo API - ExpressJS Implementation",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "nodemon": "nodemon ./server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rlucas12/todo-api.git"
+  },
+  "author": "REYNES Lucas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Rlucas12/todo-api/issues"
+  },
+  "homepage": "https://github.com/Rlucas12/todo-api#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "dotenv": "^5.0.1",
+    "express": "^4.16.3",
+    "mongoose": "^5.1.1"
+  }
+}
