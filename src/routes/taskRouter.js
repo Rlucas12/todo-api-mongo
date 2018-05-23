@@ -12,7 +12,7 @@ taskRouter.route('/')
         let task = new Task(req.body);
         task.save(err => {
             if(err) {
-                res.status(403).send(err)
+                res.status(500).send(err)
             } else {
                 res.status(201).send(task)
             }
@@ -36,15 +36,16 @@ taskRouter.route('/:taskId')
         res.json(req.task)
     }) // end get tasks/:taskId 
     .put((req,res) => {
-        if(!req.body.content) {
-            res.status(403).send("Field content can't be blank")
-        } else {
-            req.task.content = req.body.content;
-            req.task.priority = req.body.priority;
-            req.task.isOver = req.body.isOver;
-            req.task.save()
-            res.json(req.task)
-        }
+        req.task.content = req.body.content;
+        req.task.priority = req.body.priority;
+        req.task.isOver = req.body.isOver;
+        req.task.save(err => {
+            if(err) {
+                res.status(500).send(err)
+            } else {
+                res.json(req.task)
+            }
+        })
     })
     .patch((req,res)=>{
         if(req.task._id){
