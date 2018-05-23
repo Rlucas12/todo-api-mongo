@@ -4,8 +4,8 @@
   "description": "Todo API - ExpressJS Implementation",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "nodemon": "nodemon ./server.js"
+    "start": "node ./src/server.js",
+    "nodemon": "nodemon ./src/server.js"
   },
   "repository": {
     "type": "git",
