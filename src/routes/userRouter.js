@@ -10,8 +10,13 @@ userRouter.route('/')
     })
     .post((req, res) => {
         let user = new User(req.body);
-        user.save();
-        res.status(201).send(user) 
+        user.save(err => {
+            if(err) {
+                res.status(500).send(err);
+            } else {
+                res.status(201).send(user) 
+            } 
+        });
     })
 
 // Middleware 
@@ -31,15 +36,16 @@ userRouter.route('/:userId')
         res.json(req.user)
     }) // end get users/:userId 
     .put((req,res) => {
-        if(!req.body.firstname || !req.body.lastname || !req.body.email) {
-            res.status(403).send("Fields firstname, lastname and email can't be blank")
-        } else {
-            req.user.firstname = req.body.firstname;
-            req.user.lastname = req.body.lastname;
-            req.user.email = req.body.email;
-            req.user.save()
-            res.json(req.user)
-        }
+        req.user.firstname = req.body.firstname;
+        req.user.lastname = req.body.lastname;
+        req.user.email = req.body.email;
+        req.user.save(err => {
+            if(err) {
+                res.status(500).send(err);
+            } else {
+                res.json(req.user)
+            }
+        })
     })
     .patch((req,res)=>{
         if(req.body._id){
