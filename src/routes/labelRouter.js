@@ -10,14 +10,15 @@ labelRouter.route('/')
     })
     .post((req, res) => {
         let label = new Label(req.body);
-        if(!label.name || !label.color) {
-            res.status(403).send("Fields name, color can't be blank")
-        } else {
-            label.name = req.body.name;
-            label.color = req.body.color;
-            label.save()
-            res.status(201).send(label) 
-        }
+        label.name = req.body.name;
+        label.color = req.body.color;
+        label.save(err => {
+            if(err) {
+                res.status(500).send(err)
+            } else {
+                res.status(201).send(label) 
+            }
+        })
     })
 
 // Middleware 
@@ -37,14 +38,15 @@ labelRouter.route('/:labelId')
         res.json(req.label)
     }) // end get labels/:labelId 
     .put((req,res) => {
-        if(!req.body.name || !req.body.color) {
-            res.status(403).send("Fields name, color can't be blank")
-        } else {
-            req.label.name = req.body.name;
-            req.label.color = req.body.color;
-            req.label.save()
-            res.json(req.label)
-        }
+        req.label.name = req.body.name;
+        req.label.color = req.body.color;
+        req.label.save(err => {
+            if(err) {
+                res.status(500).send(err)
+            } else {
+                res.json(req.label)
+            }
+        })
     })
     .patch((req,res)=>{
         if(req.body._id){
