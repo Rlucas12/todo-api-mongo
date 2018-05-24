@@ -9,7 +9,7 @@ const projectRouter = require('./routes/projectRouter');
 const labelRouter = require('./routes/labelRouter');
 
 const app = express();
-const port = process.env.PORT || 5656;
+const port = 3000;
 const db = mongoose.connect(process.env.DB_ADDRESS);
 
 
@@ -23,8 +23,9 @@ app.use('/api/tasks', taskRouter);
 app.use('/api/projects', projectRouter);
 app.use('/api/labels', labelRouter);
 
-app.listen(port, () => {
-    console.log(`http://localhost:${port}`)
-})
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(port);
+}
+  
 
 module.exports = app;

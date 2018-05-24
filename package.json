@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node ./src/server.js",
     "nodemon": "nodemon ./src/server.js",
-    "test": "jest"
+    "test": "NODE_ENV=test jest --forceExit"
   },
   "repository": {
     "type": "git",
