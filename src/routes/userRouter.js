@@ -1,11 +1,13 @@
 const express = require('express');
 const User = require('../models/userModel');
+const signale = require('signale');
 const userRouter = express.Router();
 
 userRouter.route('/')
     .get((req, res) => {
         User.find({}, (err, users) => {
             res.json(users)
+            signale.success('Users returned successfully')
         })  
     })
     .post((req, res) => {
@@ -13,8 +15,10 @@ userRouter.route('/')
         user.save(err => {
             if(err) {
                 res.status(500).send(err);
+                signale.error("Oops, can't create user")
             } else {
-                res.status(201).send(user) 
+                res.status(201).send(user)
+                signale.success('User created successfully')
             } 
         });
     })
@@ -22,8 +26,10 @@ userRouter.route('/')
 // Middleware 
 userRouter.use('/:userId', (req, res, next)=>{
     User.findById( req.params.userId, (err,user)=>{
-        if(err)
+        if(err) {
             res.status(500).send(err)
+            signale.error("Oops, User not found")
+        }
         else {
             req.user = user;
             next()
@@ -34,6 +40,7 @@ userRouter.use('/:userId', (req, res, next)=>{
 userRouter.route('/:userId')
     .get((req, res) => {
         res.json(req.user)
+        signale.success('User returned successfully')
     }) // end get users/:userId 
     .put((req,res) => {
         req.user.firstname = req.body.firstname;
@@ -41,9 +48,11 @@ userRouter.route('/:userId')
         req.user.email = req.body.email;
         req.user.save(err => {
             if(err) {
-                res.status(500).send(err);
+                res.status(500).send(err)
+                signale.error("Oops, User can't be updated")
             } else {
                 res.json(req.user)
+                signale.success('User updated successfully')
             }
         })
     })
@@ -61,9 +70,11 @@ userRouter.route('/:userId')
         req.user.remove(err => {
             if(err){
                 res.status(500).send(err)
+                signale.success("Oops, User can't be removed")
             }
             else{
                 res.status(204).send('removed')
+                signale.success('User removed successfully')
             }
         })
     })//delete

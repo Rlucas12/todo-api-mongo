@@ -1,20 +1,24 @@
 const express = require('express');
 const Project = require('../models/projectModel');
+const signale = require('signale');
 const projectRouter = express.Router();
 
 projectRouter.route('/')
     .get((req, res) => {
         Project.find({}, (err, projects) => {
             res.json(projects)
+            signale.success('Projects returned successfully')
         })  
     })
     .post((req, res) => {
         let project = new Project(req.body);
         project.save(err => {
             if(err) {
-                res.status(500).send(err);
+                res.status(500).send(err)
+                signale.error("Oops, can't create project")
             } else {
                 res.status(201).send(project)
+                signale.success('Project created successfully')
             }
         });
     })
@@ -22,8 +26,10 @@ projectRouter.route('/')
 // Middleware 
 projectRouter.use('/:projectId', (req, res, next)=>{
     Project.findById( req.params.projectId, (err,project)=>{
-        if(err)
+        if(err) {
             res.status(500).send(err)
+            signale.error("Oops, Project not found")
+        }
         else {
             req.project = project;
             next()
@@ -34,6 +40,7 @@ projectRouter.use('/:projectId', (req, res, next)=>{
 projectRouter.route('/:projectId')
     .get((req, res) => {
         res.json(req.project)
+        signale.success('Project returned successfully')
     }) // end get projects/:projectId 
     .put((req,res) => {
         req.project.name = req.body.name;
@@ -41,9 +48,11 @@ projectRouter.route('/:projectId')
         req.project.isArchived = req.body.isArchived;
         req.project.save(err => {
             if(err) {
-                res.status(500).send(err);
+                res.status(500).send(err)
+                signale.error("Oops, Project can't be updated")
             } else {
-                res.json(req.project);
+                res.json(req.project)
+                signale.success('Project updated successfully')
             }
         })
     })
@@ -61,9 +70,11 @@ projectRouter.route('/:projectId')
         req.project.remove(err => {
             if(err){
                 res.status(500).send(err)
+                signale.success("Oops, Project can't be removed")
             }
             else{
                 res.status(204).send('removed')
+                signale.success('Project removed successfully')
             }
         })
     })//delete
