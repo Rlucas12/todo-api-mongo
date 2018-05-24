@@ -1,11 +1,13 @@
 const express = require('express');
 const Label = require('../models/labelModel');
+const signale = require('signale');
 const labelRouter = express.Router();
 
 labelRouter.route('/')
     .get((req, res) => {
         Label.find({}, (err, labels) => {
             res.json(labels)
+            signale.success('Labels returned successfully')
         })  
     })
     .post((req, res) => {
@@ -15,8 +17,10 @@ labelRouter.route('/')
         label.save(err => {
             if(err) {
                 res.status(500).send(err)
+                signale.error("Oops, can't create label")
             } else {
-                res.status(201).send(label) 
+                res.status(201).send(label)
+                signale.success('Label created successfully')
             }
         })
     })
@@ -24,8 +28,10 @@ labelRouter.route('/')
 // Middleware 
 labelRouter.use('/:labelId', (req, res, next)=>{
     Label.findById( req.params.labelId, (err,label)=>{
-        if(err)
+        if(err) {
             res.status(500).send(err)
+            signale.error("Oops, Label not found")
+        }
         else {
             req.label = label;
             next()
@@ -36,6 +42,7 @@ labelRouter.use('/:labelId', (req, res, next)=>{
 labelRouter.route('/:labelId')
     .get((req, res) => {
         res.json(req.label)
+        signale.success('Label returned successfully')
     }) // end get labels/:labelId 
     .put((req,res) => {
         req.label.name = req.body.name;
@@ -43,8 +50,10 @@ labelRouter.route('/:labelId')
         req.label.save(err => {
             if(err) {
                 res.status(500).send(err)
+                signale.error("Oops, Label can't be updated")
             } else {
                 res.json(req.label)
+                signale.success('Label updated successfully')
             }
         })
     })
@@ -62,9 +71,11 @@ labelRouter.route('/:labelId')
         req.label.remove(err => {
             if(err){
                 res.status(500).send(err)
+                signale.success("Oops, Label can't be removed")
             }
             else{
                 res.status(204).send('removed')
+                signale.success('Label removed successfully')
             }
         })
     })//delete
