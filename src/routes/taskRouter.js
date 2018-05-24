@@ -1,11 +1,13 @@
 const express = require('express');
 const Task = require('../models/taskModel');
+const signale = require('signale');
 const taskRouter = express.Router();
 
 taskRouter.route('/')
     .get((req, res) => {
         Task.find({}, (err, tasks) => {
             res.json(tasks)
+            signale.success('Tasks returned successfully')
         })  
     })
     .post((req, res) => {
@@ -13,8 +15,10 @@ taskRouter.route('/')
         task.save(err => {
             if(err) {
                 res.status(500).send(err)
+                signale.success("Oops, can't create task")
             } else {
                 res.status(201).send(task)
+                signale.success('Task created successfully')
             }
         });
     })
@@ -22,8 +26,10 @@ taskRouter.route('/')
 // Middleware 
 taskRouter.use('/:taskId', (req, res, next)=>{
     Task.findById( req.params.taskId, (err,task)=>{
-        if(err)
+        if(err) {
             res.status(500).send(err)
+            signale.error("Oops, Task not found")
+        }
         else {
             req.task = task;
             next()
@@ -34,6 +40,7 @@ taskRouter.use('/:taskId', (req, res, next)=>{
 taskRouter.route('/:taskId')
     .get((req, res) => {
         res.json(req.task)
+        signale.success('Task returned successfully')
     }) // end get tasks/:taskId 
     .put((req,res) => {
         req.task.content = req.body.content;
@@ -42,8 +49,10 @@ taskRouter.route('/:taskId')
         req.task.save(err => {
             if(err) {
                 res.status(500).send(err)
+                signale.error("Oops, Task can't be updated")
             } else {
                 res.json(req.task)
+                signale.success('Task updated successfully')
             }
         })
     })
@@ -61,9 +70,11 @@ taskRouter.route('/:taskId')
         req.task.remove(err => {
             if(err){
                 res.status(500).send(err)
+                signale.success("Oops, Task can't be removed")
             }
             else{
                 res.status(204).send('removed')
+                signale.success('Task removed successfully')
             }
         })
     })//delete
