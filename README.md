@@ -1,4 +1,5 @@
 ![Node](https://img.shields.io/badge/node-10.0.0-brightgreen.svg)
+[![Build Status](https://travis-ci.org/Rlucas12/todo-api.svg?branch=master)](https://travis-ci.org/Rlucas12/todo-api)
 
 # Getting started
 
