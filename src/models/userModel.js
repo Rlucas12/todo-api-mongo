@@ -21,7 +21,6 @@ const userModel = new Schema({
       match: [/\S+@\S+\.\S+/, 'is invalid']
   },
   projects: [{ type: Schema.Types.ObjectId, ref: 'Project' }],
-  labels: [{ type: Schema.Types.ObjectId, ref: 'Label' }],
-  tasks: [{ type: Schema.Types.ObjectId, ref: 'Task' }]
+  labels: [{ type: Schema.Types.ObjectId, ref: 'Label' }]
 });
 module.exports = mongoose.model('User', userModel)

@@ -1,5 +1,6 @@
 const express = require('express');
 const Label = require('../models/labelModel');
+const User = require('../models/userModel');
 const signale = require('signale');
 const labelRouter = express.Router();
 
@@ -12,15 +13,22 @@ labelRouter.route('/')
     })
     .post((req, res) => {
         let label = new Label(req.body);
-        label.name = req.body.name;
-        label.color = req.body.color;
-        label.save(err => {
+        User.findById(req.body.user, (err, user) => {
             if(err) {
                 res.status(500).send(err)
-                signale.error("Oops, can't create label")
+                signale.error("Oops, can't find user")
             } else {
-                res.status(201).send(label)
-                signale.success('Label created successfully')
+                user.labels.push(label._id)
+                user.save()
+                label.save(err => {
+                    if(err) {
+                        res.status(500).send(err)
+                        signale.error("Oops, can't create label")
+                    } else {
+                        res.status(201).send(label)
+                        signale.success('Label created successfully')
+                    }
+                })
             }
         })
     })

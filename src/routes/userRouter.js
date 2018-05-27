@@ -7,7 +7,6 @@ userRouter.route('/')
     .get((req, res) => {
         User.find()
         .populate('projects')
-        .populate('tasks')
         .populate('labels')
         .exec( (err, users) => {
             if(err) {
