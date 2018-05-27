@@ -14,4 +14,4 @@ const labelModel = new Schema({
       required: [true, "can't be blank"]
     }
 });
-module.exports = mongoose.model('labels', labelModel)
+module.exports = mongoose.model('Label', labelModel)

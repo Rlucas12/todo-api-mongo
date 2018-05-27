@@ -5,10 +5,19 @@ const userRouter = express.Router();
 
 userRouter.route('/')
     .get((req, res) => {
-        User.find({}, (err, users) => {
-            res.json(users)
-            signale.success('Users returned successfully')
-        })  
+        User.find()
+        .populate('projects')
+        .populate('tasks')
+        .populate('labels')
+        .exec( (err, users) => {
+            if(err) {
+                res.status(500).send(err);
+                signale.error("Oops, can't list users")
+            } else {
+                res.json(users)
+                signale.success('Users returned successfully')
+            } 
+        });
     })
     .post((req, res) => {
         let user = new User(req.body);

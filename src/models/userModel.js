@@ -20,6 +20,8 @@ const userModel = new Schema({
       required: [true, "can't be blank"],
       match: [/\S+@\S+\.\S+/, 'is invalid']
   },
-  projects: [{ type: Schema.Types.ObjectId, ref: 'projects' }]
+  projects: [{ type: Schema.Types.ObjectId, ref: 'Project' }],
+  labels: [{ type: Schema.Types.ObjectId, ref: 'Label' }],
+  tasks: [{ type: Schema.Types.ObjectId, ref: 'Task' }]
 });
-module.exports = mongoose.model('users', userModel)
+module.exports = mongoose.model('User', userModel)

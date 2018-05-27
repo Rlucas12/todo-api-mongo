@@ -1,29 +1,44 @@
 const express = require('express');
 const Project = require('../models/projectModel');
+const User = require('../models/userModel');
 const signale = require('signale');
 const projectRouter = express.Router();
 
 projectRouter.route('/')
     .get((req, res) => {
-        Project.find({}, (err, projects) => {
-            res.json(projects)
-            signale.success('Projects returned successfully')
-        })  
-    })
-    .post((req, res) => {
-        let project = new Project(req.body);
-        project.save(err => {
+        Project.find( (err, projects) => {
             if(err) {
-                res.status(500).send(err)
-                signale.error("Oops, can't create project")
+                res.status(500).send(err);
+                signale.error("Oops, can't list projects")
             } else {
-                res.status(201).send(project)
-                signale.success('Project created successfully')
+                res.json(projects)
+                signale.success('Projects returned successfully')
             }
         });
     })
+    .post((req, res) => {
+        let project = new Project(req.body)
+        User.findById(req.body.user, (err, user) => {
+            if (err) {
+                res.status(500).send(err)
+                signale.error("Oops, can't find user")
+            } else {
+                user.projects.push(project._id)
+                user.save()
+                project.save(err => {
+                    if(err) {
+                        res.status(500).send(err)
+                        signale.error("Oops, can't create project")
+                    } else {
+                        res.status(201).send(project)
+                        signale.success('Project created successfully')
+                    }
+                });
+            }
+        })
+    })
 
-// Middleware 
+// Middleware
 projectRouter.use('/:projectId', (req, res, next)=>{
     Project.findById( req.params.projectId, (err,project)=>{
         if(err) {
@@ -35,8 +50,8 @@ projectRouter.use('/:projectId', (req, res, next)=>{
             next()
         }
     })
-
 })
+
 projectRouter.route('/:projectId')
     .get((req, res) => {
         res.json(req.project)

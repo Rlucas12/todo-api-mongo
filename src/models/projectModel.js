@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const projectModel = new Schema({
-  user: { type: Schema.Types.ObjectId, ref: 'users' },
   name: {
     type: String,
     lowercase: false,
@@ -17,6 +16,11 @@ const projectModel = new Schema({
   isArchived: {
     type: Boolean,
     default: false
+  },
+  user: { 
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true 
   }
 });
-module.exports = mongoose.model('projects', projectModel)
+module.exports = mongoose.model('Project', projectModel)
